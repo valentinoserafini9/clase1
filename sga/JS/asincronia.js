@@ -40,3 +40,16 @@ setTimeout(() => {
 }, 3000);
 
 console.log("El usuario pude seguir navegando");
+
+
+// 1. Iniciamos la acción
+console.log("Solicitando lista de alumnos...");
+
+// 2. Configuramos la espera de 5 segundos (5000 milisegundos)
+setTimeout(() => {
+    console.log("Lista recibida");
+}, 5000);
+
+// 3. Este mensaje se mostrará inmediatamente después del primero, 
+// demostrando que el programa sigue ejecutándose mientras espera los 5 segundos.
+console.log("Miembros en espera... el programa sigue ejecutándose");

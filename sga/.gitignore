@@ -1,0 +1,8 @@
+# visual studio code
+.vscode/
+
+# variable de entorno 
+.env 
+
+#Node.js
+node_modules/

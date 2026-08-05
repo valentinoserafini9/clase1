@@ -1,3 +1,4 @@
+
 // console.log("Inicio");
 
 // setTimeout(() => {
@@ -34,22 +35,73 @@
 //     console.log("Buscando cursos...");
 // }, 4000);
 
-console.log("Abriendo Sistema de Gestion Academica");
-setTimeout(() => {
-    console.log("Alumnos Cargados");
-}, 3000);
+// console.log("Abriendo Sistema de Gestion Academica");
+// setTimeout(() => {
+//     console.log("Alumnos Cargados");
+// }, 3000);
 
-console.log("El usuario pude seguir navegando");
+// console.log("El usuario pude seguir navegando");
 
 
-// 1. Iniciamos la acción
-console.log("Solicitando lista de alumnos...");
+// setTimeout(() => {
+//     console.log("Solicitando lista de alumnos...");
+// }, 5000);
 
-// 2. Configuramos la espera de 5 segundos (5000 milisegundos)
-setTimeout(() => {
-    console.log("Lista recibida");
-}, 5000);
+// console.log("Mientras tanto el programa sigue ejecutándose");
 
-// 3. Este mensaje se mostrará inmediatamente después del primero, 
-// demostrando que el programa sigue ejecutándose mientras espera los 5 segundos.
-console.log("Miembros en espera... el programa sigue ejecutándose");
+// function obtenerAlumnos(){
+//     return new Promise((resolve) => {
+//         setTimeout(() => {
+//             console.log("Alumnos cargados");
+//             resolve(["Ana", "Juan", "Pedro"]);
+//         }, 3000);
+//     });
+// }
+
+// obtenerAlumnos().then((alumnos) => {
+//     console.log(alumnos);
+// });
+
+// async function iniciar(){
+//     const alumnos = await obtenerAlumnos();
+//     console.log(alumnos);
+// }
+
+// iniciar();
+
+function obtenerClima(){
+    return new Promise((resolve) => {
+        setTimeout(() => {
+            console.log("Clima cargado");
+            resolve({ temperatura: 25, condiciones: "Soleado" });
+        }, 3000);
+    });
+}
+
+// con then()
+obtenerClima().then((clima) => {
+    console.log(clima);
+});
+
+// con async/await
+async function iniciarClima(){
+    const clima = await obtenerClima();
+    console.log(clima);
+}
+
+iniciarClima();
+
+async function mostrarSaldo(){
+    const saldo = await obtenerSaldo();
+    console.log(`Su saldo es: ${saldo}`);
+}
+
+mostrarSaldo();
+
+function iniciarSecion(){
+    return new Promise(resolve => {
+        setTimeout(() => {
+            resolve("Sesion iniciada");
+        }, 3000);
+    });
+}

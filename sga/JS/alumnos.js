@@ -57,26 +57,49 @@ let alumnoEditandoId = null
 
 formulario.addEventListener("submit", function (event) {
     event.preventDefault();
-    
-    const nombre = document.querySelector("#nombre").value
-    const carrera = document.querySelector("#carrera").value
-    const correo = document.querySelector("#correo").value
-    
-    const alumno = {
-        id: Date.now(),
-        nombre: nombre,
-        carrera: carrera,
-        correo: correo
+
+    const nombre = document.querySelector("#nombre").value.trim()
+    const carrera = document.querySelector("#carrera").value.trim()
+    const correo = document.querySelector("#correo").value.trim()
+
+    if (nombre === "" || carrera === "" || correo === "") {
+        mostrarMensaje("Todos los campos son obligatorios", "mje-error")
+        return
     }
+
+    if (!correo.includes("@")) {
+        mostrarMensaje("Ingrese un correo electrónico válido", "mje-error")
+        return
+    }
+
+    if (nombre.length < 3) {
+        mostrarMensaje("El nombre debe tener al menos 3 caracteres", "mje-error")
+        return
+    }
+
     const alumnos = obtenerAlumnos()
-    alumnos.push(alumno)
 
+    if (alumnoEditandoId === null) {
+        const alumno = {
+            id: Date.now(),
+            nombre: nombre,
+            carrera: carrera,
+            correo: correo
+        }
+        alumnos.push(alumno)
+        mostrarMensaje("Alumno guardado correctamente", "mje-exito")
+    } else {
+        const alumno = alumnos.find(alumno => alumno.id === alumnoEditandoId)
+        alumno.nombre = nombre
+        alumno.carrera = carrera
+        alumno.correo = correo
+        alumnoEditandoId = null
+        formulario.querySelector("button").textContent = "Guardar Alumno"
+
+        mostrarMensaje("Alumno actualizado correctamente", "mje-exito")
+    }
     localStorage.setItem("alumnos", JSON.stringify(alumnos))
-
-    mostrarMensaje("Alumno guardado correctamente")
-
     mostraAlumnos(alumnos)
-
     formulario.reset()
 });
 
@@ -89,13 +112,14 @@ function obtenerAlumnos() {
     return []
 }
 
-function mostrarMensaje(texto) {
+function mostrarMensaje(texto, tipo) {
     mensaje.textContent = texto;
+    mensaje.className = tipo
     setTimeout(() => {
         mensaje.textContent = " ";
+        mensaje.className = "oculto"
     }, 3000);
 }
-
 
 function mostraAlumnos(alumnos) {
     listaAlumnos.innerHTML = ""
@@ -107,8 +131,14 @@ function mostraAlumnos(alumnos) {
             <td>${alumno.carrera}</td>
             <td>${alumno.correo}</td>
             <td>
-                <button class="btn-editar" data-id="${alumno.id}">Editar</button>
-                <button class="btn-eliminar" data-id="${alumno.id}">Eliminar</button>
+                <button class="btn-editar"
+                 data-id="${alumno.id}"
+                 title="Editar Alumno">
+                 <i class="fa-solid fa-pen"></i>
+                </button>
+                <button class="btn-eliminar" data-id="${alumno.id}" title="Eliminar Alumno">
+                    <i class="fa-solid fa-trash"></i>
+                </button>
             </td>
         </tr>
         `;
@@ -121,14 +151,30 @@ function eliminarAlumno(id) {
     );
     localStorage.setItem("alumnos", JSON.stringify(alumnosActualizados))
     mostraAlumnos(alumnosActualizados)
-    mostrarMensaje("Alumno eliminado correctamente")
+    if (alumnoEditandoId === id) {
+        formulario.reset()
+        alumnoEditandoId = null
+        formulario.querySelector("button").textContent = "Guardar Alumno"
+        
+    }
+    mostrarMensaje("Alumno eliminado correctamente", "mje-exito")
 }
 
-listaAlumnos.addEventListener("click", (e) => {
-        if (e.target.classList.contains("btn-eliminar")) {
-            const id = Number(e.target.dataset.id)
+listaAlumnos.addEventListener("click", (e) => { 
+    const boton_el = e.target.closest(".btn-eliminar")
+    
+    if (boton_el) {
+        const id = Number(boton_el.dataset.id)
+        const confirmar = confirm("¿Está seguro de eliminar este alumno?")
+        if (confirmar) {
             eliminarAlumno(id)
-        }
+        }  
+    }
+    const boton_ed = e.target.closest(".btn-editar")
+    if (boton_ed) {
+        const id = Number(boton_ed.dataset.id)
+        editarAlumno(id)
+    }
 })
 
 function editarAlumno(id) {
@@ -138,4 +184,9 @@ function editarAlumno(id) {
     document.querySelector("#carrera").value = alumno.carrera;
     document.querySelector("#correo").value = alumno.correo;
     alumnoEditandoId = id;
+    formulario.querySelector("button").textContent = "Actualizar Alumno"
+    document.querySelector("#nombre").focus()
 }
+
+const alumnos = obtenerAlumnos()
+mostraAlumnos(alumnos)
